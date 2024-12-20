@@ -959,24 +959,17 @@
       "affiche": "https://m.media-amazon.com/images/M/MV5BMTMxMTUzOTYxNF5BMl5BanBnXkFtZTcwNDYxMTIyMw@@._V1_.jpg"
     }
   ],
-  "users": [
+  "users":[
     {
-      "id": "1",
-      "username": "admin123",
-      "userpassword": "1234",
-      "type": "admin"
+      "id": 1,
+      "username" : "admin123",
+      "userpassword":"1234",
+      "type" : "admin"
     },
-    {
-      "id": "2",
-      "username": "user123",
-      "userpassword": "1234",
-      "type": "user"
-    },
-    {
-      "id": "7ce2",
-      "username": "tom123",
-      "userpassword": "1234",
-      "type": "user"
+    { "id": 2,
+      "username" : "user123",
+      "userpassword":"1234",
+      "type" : "user"
     }
   ]
 }

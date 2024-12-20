@@ -57,22 +57,33 @@ export default function movieCard(movie) {
     window.location.href = `modif.html?id=${movie.id}`;
   });
 
-  // Gestionnaire d'événement pour Supprimer
-  boutonSupprimer.addEventListener("click", function () {
-    const supprime = confirm("Voulez-vous supprimer cette carte ?");
-    if (supprime) {
-      // Requête DELETE à l'API
-      fetch(`http://localhost:3000/films/${movie.id}`, {
-        method: "DELETE",
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          console.log("Utilisateur supprimé :", res);
-        })
-        .catch((err) => console.error("Erreur lors de la suppression :", err));
+// Fonction asynchrone pour gérer la suppression
+async function supprimerCarte(movieId) {
+  try {
+    // Requête DELETE à l'API
+    const response = await fetch(`http://localhost:3000/films/${movieId}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur lors de la suppression, statut : ${response.status}`);
     }
-  });
+
+    const result = await response.json();
+    console.log("Film supprimé :", result);
+  } catch (error) {
+    console.error("Erreur lors de la suppression :", error);
+  }
 }
+
+// Gestionnaire d'événement pour Supprimer
+boutonSupprimer.addEventListener("click", function () {
+  const supprime = confirm("Voulez-vous supprimer cette carte ?");
+  if (supprime) {
+    supprimerCarte(movie.id); // Appel de la fonction asynchrone
+  }
+});
+
 
 // Fonction de recherche par nom de film
 function searchMovies() {
@@ -99,4 +110,4 @@ function searchMovies() {
 
 // Ajouter un écouteur d'événements pour la barre de recherche
 const searchInput = document.getElementById("searchInput");
-searchInput.addEventListener("input", searchMovies);
+searchInput.addEventListener("input", searchMovies);}
