@@ -10,11 +10,13 @@ export default function movieCard(movie) {
   const contenuDiv = document.createElement("div");
   contenuDiv.className = "contenu";
   contenuDiv.innerHTML = `
-        <p>NOM : ${movie.titre}</p>
+        <p>Nom : ${movie.titre}</p>
         <p>Réalisateur : ${movie.realisateur}</p>
         <p>Année : ${movie.annee}</p>
-        <p>${movie.genre}</p>
-    `;
+        <p>Durée : ${movie.duree}</p>
+        <p>Genre : ${movie.genre}</p>
+        `
+    ;
 
   // Créer un bouton Sélectionner
   const boutonSelectionner = document.createElement("button");
