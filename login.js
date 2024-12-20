@@ -24,6 +24,9 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         if (role === 'admin') {
             window.location.href = "index.html"; // Page d'admin
         } 
+        if (role === 'user') {
+            window.location.href = "index.html"; // Page d'admin
+        } 
     } 
 });
 
