@@ -50,3 +50,11 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     alert("Identifiant ou mot de passe incorrect !");
   }
 });
+document.getElementById("togglePassword").addEventListener("click", function () {
+  const passwordField = document.getElementById("password");
+  const type = passwordField.type === "password" ? "text" : "password";
+  passwordField.type = type;
+
+  // Changer l'icône d'œil
+  this.textContent = type === "password" ? "👁️" : "🙈";
+});
