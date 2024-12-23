@@ -5,36 +5,70 @@ const id = params.get("id"); // Obtenir l'ID de la query string
 // Variable pour stocker le film sélectionné
 let movie;
 
-// Fetch pour récupérer les données de l'utilisateur
-fetch("http://localhost:3000/films")
-  .then((response) => response.json())
-  .then((data) => {
-    // Trouver le film correspondant à l'ID
-    movie = data.find((item) => item.id == id);
-    if (movie) {
-      console.log(movie);
-
-      // Pré-remplir le formulaire avec les données du film
-      document.getElementById("titre").value = movie.titre;
-      document.getElementById("realisateur").value = movie.realisateur;
-      document.getElementById("annee").value = movie.annee;
-      document.getElementById("synopsis").value = movie.synopsis;
-      document.getElementById("genres").value = movie.genre;
-      document.getElementById("affiche").value = movie.affiche;
-      document.getElementById("duree").value = movie.duree;
-    } else {
-      console.error("Film non trouvé");
-      document.body.innerHTML = "<h1>Film introuvable</h1>";
+// Fonction asynchrone pour récupérer les données du film
+const fetchMovie = async (id) => {
+  try {
+    const response = await fetch("http://localhost:3000/films");
+    if (!response.ok) {
+      throw new Error(`Erreur lors de la récupération des films : ${response.status}`);
     }
-  })
-  .catch((err) => {
-    console.error("Erreur lors de la récupération des données :", err);
-    document.body.innerHTML = "<h1>Une erreur s'est produite</h1>";
-  });
+
+    const data = await response.json();
+
+    // Trouver le film correspondant à l'ID
+    const selectedMovie = data.find((item) => item.id == id);
+    if (!selectedMovie) {
+      throw new Error("Film non trouvé");
+    }
+
+    return selectedMovie;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des données :", error);
+    document.body.innerHTML = `<h1>${error.message}</h1>`;
+    return null;
+  }
+};
+
+// Fonction asynchrone pour mettre à jour le film
+const updateMovie = async (id, updatedMovie) => {
+  try {
+    const response = await fetch(`http://localhost:3000/films/${id}`, {
+      method: "PUT", // Utiliser PUT ou PATCH pour une mise à jour
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedMovie),
+    });
+
+    if (!response.ok) {
+      throw new Error("Erreur lors de la mise à jour du film.");
+    }
+
+    alert("Film mis à jour avec succès !");
+  } catch (error) {
+    console.error("Erreur :", error);
+    alert("Une erreur est survenue lors de la mise à jour du film.");
+  }
+};
+
+// Initialisation : récupérer les données et pré-remplir le formulaire
+const init = async () => {
+  movie = await fetchMovie(id);
+
+  if (movie) {
+    // Pré-remplir le formulaire avec les données du film
+    document.getElementById("titre").value = movie.titre;
+    document.getElementById("realisateur").value = movie.realisateur;
+    document.getElementById("annee").value = movie.annee;
+    document.getElementById("synopsis").value = movie.synopsis;
+    document.getElementById("genres").value = movie.genre.join(", ");
+    document.getElementById("affiche").value = movie.affiche;
+    document.getElementById("duree").value = movie.duree;
+  }
+};
 
 // Gestionnaire d'événement pour le formulaire
-const form = document.getElementById("userForm");
-form.addEventListener("submit", function (event) {
+document.getElementById("userForm").addEventListener("submit", async (event) => {
   event.preventDefault();
 
   // Vérifier que le film est chargé
@@ -54,20 +88,9 @@ form.addEventListener("submit", function (event) {
     duree: document.getElementById("duree").value || movie.duree,
   };
 
-  // Envoyer les données mises à jour à l'API
-  fetch(`http://localhost:3000/films/${id}`, {
-    method: "PUT", // Utiliser PUT ou PATCH pour une mise à jour
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updatedMovie),
-  })
-    .then((response) => {
-      if (response.ok) {
-        alert("Film mis à jour avec succès !");
-      } else {
-        alert("Erreur lors de la mise à jour du film.");
-      }
-    })
-    .catch((error) => console.error("Erreur :", error));
+  // Appeler la fonction pour mettre à jour le film
+  await updateMovie(id, updatedMovie);
 });
+
+// Appeler l'initialisation
+init();
